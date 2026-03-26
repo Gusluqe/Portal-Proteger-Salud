@@ -1,136 +1,105 @@
-/* Skills */
-const skillsTech = document.querySelector('.skills-tech')
+(function() {
+  'use strict';
 
-const skills = [
-  // {
-  //   path: 'https://www.logo.wine/a/logo/Google_Chrome/Google_Chrome-Logo.wine.svg',
-  //   name: 'Chrome',
-  // },
-  // {
-  //   path: 'https://res.cloudinary.com/dfc7m5ola/image/upload/v1705068793/vsc_m9yr7b.svg',
-  //   name: 'VS CODE',
-  // },
-  // {
-  //   path: 'https://res.cloudinary.com/dfc7m5ola/image/upload/v1705068791/html_q6pvb3.svg',
-  //   name: 'HTML',
-  // },
-  // {
-  //   path: 'https://res.cloudinary.com/dfc7m5ola/image/upload/v1705069308/logo-css-3-2048_dkollb.png',
-  //   name: 'CSS',
-  // },
-  // {
-  //   path: 'https://res.cloudinary.com/dfc7m5ola/image/upload/v1705068791/javascript_u1zqf9.svg',
-  //   name: 'JAVASCRIPT',
-  // },
-  // {
-  //   path: 'https://res.cloudinary.com/dfc7m5ola/image/upload/v1705068793/react_ufwyeu.svg',
-  //   name: 'REACT',
-  // },
-  // {
-  //   path: 'https://res.cloudinary.com/dfc7m5ola/image/upload/v1715125614/pngwing.com_u1n0ff.png',
-  //   name: 'NPM',
-  // },
-  // {
-  //   path: 'https://res.cloudinary.com/dfc7m5ola/image/upload/v1715126845/pngwing.com_4_xd8c7k.png',
-  //   name: 'NODE.JS',
-  // },
-  // {
-  //   path: 'https://res.cloudinary.com/dfc7m5ola/image/upload/v1715125373/tailwind-css-logo-24_f921tf.png',
-  //   name: 'TAILWIND',
-  // },
-  // {
-  //   path: 'https://res.cloudinary.com/dfc7m5ola/image/upload/v1715125758/pngegg_fpc4zr.png',
-  //   name: 'GIT',
-  // },
-  // {
-  //   path: 'https://res.cloudinary.com/dfc7m5ola/image/upload/v1715125844/pngwing.com_2_h3i32t.png',
-  //   name: 'POSTRGRES',
-  // },
-  // {
-  //   path: 'https://res.cloudinary.com/dfc7m5ola/image/upload/v1715125980/pngwing.com_3_zltarm.png',
-  //   name: 'EXPRESS',
-  // },
-  // {
-  //   path: 'https://res.cloudinary.com/dfc7m5ola/image/upload/v1715126047/klipartz.com_oznl55.png',
-  //   name: 'SEQUELIZE',
-  // }
-]
+  const initNavigation = () => {
+    const navMenu = document.getElementById('navMenu');
+    const btnOpen = document.getElementById('btnOpen');
+    const btnClose = document.getElementById('btnClose');
+    const listLinks = document.querySelectorAll('.list-link');
 
-let html = ''
+    if (!navMenu || !btnOpen || !btnClose) return;
 
-for (const skill of skills) {
-  html += `
-  <div class='skill'>
-    <img src='${skill.path}' alt='${skill.name}'>
-    <h3>${skill.name}</h3>
-  </div>
-`
-}
+    const openMenu = () => navMenu.classList.add('show-menu');
+    const closeMenu = () => navMenu.classList.remove('show-menu');
 
-skillsTech.innerHTML = html
+    btnOpen.addEventListener('click', openMenu);
+    btnClose.addEventListener('click', closeMenu);
 
-/* NavBar */
-const navbar = document.querySelector('.nav')
-const menu = document.querySelector('.nav-menu')
-const links = document.querySelectorAll('.list-link')
+    listLinks.forEach(link => {
+      link.addEventListener('click', closeMenu);
+    });
 
-navbar.addEventListener('click', function (e) {
-  if (e.target.closest('.btn-open')) {
-    menu.classList.toggle('show-menu')
-  }
+    document.addEventListener('click', (e) => {
+      if (!navMenu.contains(e.target) && !btnOpen.contains(e.target)) {
+        closeMenu();
+      }
+    });
+  };
 
-  if (e.target.closest('.btn-close')) {
-    menu.classList.remove('show-menu')
-  }
+  const initTheme = () => {
+    const btnTheme = document.getElementById('btnTheme');
+    if (!btnTheme) return;
 
-  if (e.target.closest('.list-link')) {
-    menu.classList.remove('show-menu')
-  }
+    const icon = btnTheme.querySelector('i');
+    const savedTheme = localStorage.getItem('theme');
 
-  if (e.target.closest('.list-link')) {
-    for (const link of links) {
-      link.parentElement.classList.remove('active')
+    if (savedTheme === 'light') {
+      document.body.classList.add('light');
+      icon.classList.replace('bxs-moon', 'bxs-sun');
     }
 
-    e.target.parentElement.classList.add('active')
-  }
-})
+    btnTheme.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      const isLight = document.body.classList.contains('light');
 
-/* Light Mode */
-const btnLight = document.querySelector('.btn-theme')
+      if (isLight) {
+        icon.classList.replace('bxs-moon', 'bxs-sun');
+        localStorage.setItem('theme', 'light');
+      } else {
+        icon.classList.replace('bxs-sun', 'bxs-moon');
+        localStorage.removeItem('theme');
+      }
+    });
+  };
 
-// Comprobar si el modo light está activado
-// getItem -> Obtener datos del localStorage
-const theme = window.localStorage.getItem('theme')
+  const initSearch = () => {
+    const buscador = document.getElementById('buscador');
+    const mensajeNoEncontrado = document.getElementById('mensaje-no-encontrado');
+    const tarjetas = document.querySelectorAll('.services-card');
 
-if (theme) {
-  document.body.classList.add('light')
-  changeTheme(true)
-} else {
-  document.body.classList.remove('light')
-  changeTheme(false)
-}
+    if (!buscador || !mensajeNoEncontrado || tarjetas.length === 0) return;
 
-btnLight.addEventListener('click', function () {
-  document.body.classList.toggle('light')
+    buscador.addEventListener('input', function() {
+      const filtro = this.value.toLowerCase().trim();
+      let hayResultados = false;
 
-  if (document.body.classList.contains('light')) {
-    changeTheme(true)
-  } else {
-    changeTheme(false)
-  }
-})
+      tarjetas.forEach(tarjeta => {
+        const titulo = tarjeta.querySelector('.h3');
+        if (!titulo) return;
 
-function changeTheme (bool) {
-  if (bool) {
-    btnLight.firstElementChild.classList.remove('bxs-moon')
-    btnLight.firstElementChild.classList.add('bxs-sun')
-    // setItem -> Almacenar datos en el localStorage
-    window.localStorage.setItem('theme', 'light')
-  } else {
-    btnLight.firstElementChild.classList.remove('bxs-sun')
-    btnLight.firstElementChild.classList.add('bxs-moon')
-    // removeItem -> Eliminar datos del localStorage
-    window.localStorage.removeItem('theme')
-  }
-}
+        const texto = titulo.textContent.toLowerCase();
+        const coincide = texto.includes(filtro);
+
+        tarjeta.style.display = coincide ? '' : 'none';
+        if (coincide) hayResultados = true;
+      });
+
+      mensajeNoEncontrado.classList.toggle('show', !hayResultados && filtro.length > 0);
+    });
+  };
+
+  const initTypedEffect = () => {
+    const heroDescription = document.querySelector('.hero-description');
+    if (!heroDescription || !window.Typed) return;
+
+    const textoOriginal = heroDescription.innerHTML;
+    
+    if (heroDescription.querySelector('span')) {
+      new Typed('.hero-description span', {
+        strings: ['Validación.', 'Ofertas.', 'Droguerías.'],
+        typeSpeed: 60,
+        backSpeed: 60,
+        loop: true,
+        cursorChar: '|',
+      });
+    }
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    initNavigation();
+    initTheme();
+    initSearch();
+    initTypedEffect();
+  });
+
+})();
