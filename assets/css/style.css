@@ -244,12 +244,15 @@ ul, ol { list-style: none; }
   flex-shrink: 0;
 }
 
+/* El logo es un JPG: un circulo verde sobre fondo blanco. Con esquinas de
+   8px y borde se veia el cuadrado blanco alrededor (muy notorio en oscuro).
+   El circulo ocupa todo el ancho de la imagen, asi que recortarlo en circulo
+   deja solo el verde. Mismo tamaño de caja (32px). */
 .logo {
   width: 32px;
   height: 32px;
-  border-radius: var(--r-md);
+  border-radius: 50%;
   object-fit: cover;
-  border: 1px solid var(--color-border-light);
 }
 
 .brand-name {
@@ -328,9 +331,23 @@ ul, ol { list-style: none; }
   border-color: transparent;
 }
 
+/* Unico uso: el boton de WhatsApp del header. La sombra de tarjeta (28px de
+   desenfoque) se derramaba por debajo del header; aca va una corta. */
 .btn-icon.primary:hover {
   background: var(--color-primary-hover);
-  box-shadow: var(--shadow-card-hover);
+  box-shadow: 0 2px 8px var(--color-primary-shadow);
+}
+
+/* En oscuro --color-primary se aclara y --color-primary-text pasa a casi
+   negro: el glifo de WhatsApp quedaba negro sobre verde menta, invertido.
+   Se mantiene el verde y el glifo blanco del modo claro (5.6:1). */
+[data-theme="dark"] .btn-icon.primary {
+  background: oklch(48% 0.15 162);
+  color: oklch(99% 0 0);
+}
+
+[data-theme="dark"] .btn-icon.primary:hover {
+  background: oklch(41% 0.14 162);
 }
 
 .btn-menu { display: flex; }
