@@ -1,0 +1,12 @@
+{
+  "name": "portal-proteger-salud",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Portal interno de la red de farmacias Proteger Salud",
+  "scripts": {
+    "index": "node tools/build-index.js",
+    "build": "node tools/build-index.js && node tools/build-site.js",
+    "dev": "node tools/serve.js"
+  },
+  "engines": { "node": ">=18" }
+}

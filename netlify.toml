@@ -1,0 +1,14 @@
+[build]
+  command  = "node tools/build-site.js"
+  publish  = "dist"
+  functions = "netlify/functions"
+
+# El buscador de medicos llama a /api/sisa
+[[redirects]]
+  from = "/api/sisa"
+  to   = "/.netlify/functions/sisa"
+  status = 200
+
+[functions]
+  node_bundler = "esbuild"
+  included_files = ["lib/**"]

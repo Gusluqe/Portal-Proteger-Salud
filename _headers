@@ -1,0 +1,27 @@
+# Netlify aplica las reglas en orden y, para un mismo header, gana LA ULTIMA
+# que coincide. Por eso las genericas van primero y las especificas despues:
+# al reves, /assets/* pisaba a /assets/js/*.
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY
+
+# Logos y demas: no cambian y no son criticos.
+/assets/*
+  Cache-Control: public, max-age=86400
+
+# El codigo tiene que poder corregirse el mismo dia. no-cache no significa
+# "no guardar": el navegador lo guarda igual, pero revalida con el ETag antes
+# de usarlo, y si no cambio la respuesta es un 304 de unos pocos bytes. Sin
+# esto, una PC que ya abrio el portal seguia con el JS viejo 24 horas despues
+# de cada arreglo.
+/assets/js/*
+  Cache-Control: public, no-cache
+
+/assets/css/*
+  Cache-Control: public, no-cache
+
+# El indice de medicos pesa 1,3 MB y solo cambia al regenerar la base.
+/assets/data/*
+  Cache-Control: public, max-age=604800, stale-while-revalidate=2592000

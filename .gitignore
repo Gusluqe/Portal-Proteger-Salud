@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.netlify/
+.vercel/
+.DS_Store
+
+# Base cruda: pesa 19 MB y no se publica. El portal usa el indice
+# generado en assets/data/ por tools/build-index.js.
+me_bsas.dbf
