@@ -1033,6 +1033,44 @@ kbd {
   color: var(--color-text);
 }
 
+.medico-nombre-fila {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.medico-copiar {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all var(--dur-fast) var(--ease-io);
+}
+
+.medico-copiar:hover {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+.medico-copiar:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.medico-copiar.is-ok {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
 .medico-origen {
   grid-column: 2;
   grid-row: 1 / span 2;

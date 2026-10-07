@@ -56,6 +56,28 @@
     ));
   }
 
+  const ICONO_COPIAR = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg>';
+  const ICONO_OK = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
+
+  /** Copia al portapapeles. El fallback cubre navegadores sin Clipboard API. */
+  async function copiarTexto(texto) {
+    try {
+      await navigator.clipboard.writeText(texto);
+      return true;
+    } catch {
+      const ta = document.createElement('textarea');
+      ta.value = texto;
+      ta.setAttribute('readonly', '');
+      ta.style.cssText = 'position:fixed;opacity:0;pointer-events:none';
+      document.body.appendChild(ta);
+      ta.select();
+      let ok = false;
+      try { ok = document.execCommand('copy'); } catch { ok = false; }
+      ta.remove();
+      return ok;
+    }
+  }
+
   // ── Carga del indice ──────────────────────────────────────────────────
 
   async function traerConCache(url) {
@@ -351,6 +373,23 @@
       if (salida.children.length || estado.innerHTML) abrirPopover(true);
     });
 
+    // Copiar el nombre con un click, para pegarlo en la validacion sin tener
+    // que seleccionarlo a mano.
+    salida.addEventListener('click', async (e) => {
+      const btn = e.target.closest('.medico-copiar');
+      if (!btn) return;
+      const ok = await copiarTexto(btn.dataset.copiar);
+      btn.classList.toggle('is-ok', ok);
+      btn.innerHTML = ok ? ICONO_OK : ICONO_COPIAR;
+      btn.title = ok ? 'Copiado' : 'No se pudo copiar';
+      clearTimeout(btn._t);
+      btn._t = setTimeout(() => {
+        btn.classList.remove('is-ok');
+        btn.innerHTML = ICONO_COPIAR;
+        btn.title = 'Copiar nombre';
+      }, 1500);
+    });
+
     function pintar(resultados, nota) {
       salida.innerHTML = resultados.map(tarjeta).join('');
       if (nota) salida.insertAdjacentHTML('afterbegin', nota);
@@ -368,7 +407,10 @@
 
       return `<article class="medico-card">
         <div class="medico-card-head">
-          <h4 class="medico-nombre">${escapar(m.nombre)}</h4>
+          <div class="medico-nombre-fila">
+            <h4 class="medico-nombre">${escapar(m.nombre)}</h4>
+            <button type="button" class="medico-copiar" data-copiar="${escapar(m.nombre)}" title="Copiar nombre" aria-label="Copiar nombre de ${escapar(m.nombre)}">${ICONO_COPIAR}</button>
+          </div>
           ${fuente}
         </div>
         ${meta ? `<p class="medico-meta">${meta}</p>` : ''}
