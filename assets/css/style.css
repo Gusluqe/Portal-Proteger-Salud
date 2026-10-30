@@ -1186,6 +1186,337 @@ kbd {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
+   CALCULADOR IOMA
+   El verde y el rojo del resultado son fijos en los dos temas: es lo que se
+   lee de reojo en el mostrador, y --color-primary en oscuro pasa a verde menta
+   con texto negro.
+   ───────────────────────────────────────────────────────────────────────────── */
+:root {
+  --ioma-verde:      oklch(48% 0.15 162);
+  --ioma-verde-hover: oklch(41% 0.14 162);
+  --ioma-rojo:       oklch(47% 0.19 25);
+  --ioma-amarillo:   oklch(93% 0.15 100);
+  --ioma-blanco:     oklch(99% 0 0);
+}
+
+@media (min-width: 860px) {
+  .toolbar-inner--ioma {
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr) auto;
+  }
+}
+
+/* En celular la barra pegajosa ya ocupa un cuarto de pantalla: el boton va
+   arriba y se esconde bajo el header al scrollear (16 de padding + 48 de alto
+   + 2 de aire), asi los buscadores quedan fijos con el mismo alto de antes. */
+@media (max-width: 859px) {
+  .toolbar--ioma { top: calc(var(--header-h) - 66px); }
+  .btn-ioma { order: -1; }
+}
+
+.btn-ioma {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  align-self: end;
+  height: 48px;
+  padding: 0 var(--sp-5);
+  border-radius: var(--r-md);
+  background: var(--ioma-verde);
+  color: var(--ioma-blanco);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  box-shadow: var(--shadow-xs);
+  transition:
+    background-color var(--dur-fast) var(--ease-io),
+    transform 120ms var(--ease-out);
+}
+
+.btn-ioma:hover { background: var(--ioma-verde-hover); }
+.btn-ioma:active { transform: scale(0.97); }
+
+/* <dialog> se centra con margin:auto y el reset global se lo saca. Sin tocar
+   display: el navegador lo oculta cuando no esta [open]. */
+.ioma {
+  width: min(360px, calc(100vw - var(--sp-8)));
+  max-height: calc(100dvh - var(--sp-8));
+  margin: auto;
+  overflow-y: auto;
+  border: none;
+  border-radius: var(--r-xl);
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: var(--shadow-pop);
+  opacity: 0;
+  transform: scale(0.96);
+  transition:
+    opacity 120ms var(--ease-out),
+    transform 120ms var(--ease-out),
+    overlay 120ms allow-discrete,
+    display 120ms allow-discrete;
+}
+
+.ioma[open] {
+  opacity: 1;
+  transform: none;
+  transition-duration: 200ms;
+}
+
+@starting-style {
+  .ioma[open] { opacity: 0; transform: scale(0.96); }
+}
+
+.ioma::backdrop {
+  background: oklch(14% 0.015 162 / 0);
+  transition:
+    background-color 120ms var(--ease-out),
+    overlay 120ms allow-discrete,
+    display 120ms allow-discrete;
+}
+
+.ioma[open]::backdrop {
+  background: oklch(14% 0.015 162 / 0.5);
+  transition-duration: 200ms;
+}
+
+@starting-style {
+  .ioma[open]::backdrop { background: oklch(14% 0.015 162 / 0); }
+}
+
+.ioma-cabecera {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-3) var(--sp-3) var(--sp-4);
+  background: var(--ioma-verde);
+  color: var(--ioma-blanco);
+}
+
+/* El logo oficial es blanco sobre transparente: solo va sobre el verde fijo. */
+.ioma-logo,
+.btn-ioma-logo {
+  width: 65px;
+  height: 25px;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.ioma-titulo {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--text-base);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.ioma-cerrar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: var(--r-md);
+  color: inherit;
+  transition: background-color var(--dur-fast) var(--ease-io);
+}
+
+.ioma-cerrar:hover { background: oklch(100% 0 0 / 0.16); }
+.ioma-cerrar:focus-visible { outline-color: var(--ioma-blanco); outline-offset: -2px; }
+
+.ioma-cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+}
+
+.ioma-etiquetas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  column-gap: var(--sp-2);
+}
+
+.ioma-etiquetas .tool-label { white-space: nowrap; }
+
+.ioma-hoy {
+  margin-bottom: 6px;
+  white-space: nowrap;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-muted);
+}
+
+.ioma-input {
+  width: 100%;
+  height: 56px;
+  padding: 0 var(--sp-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--r-md);
+  outline: none;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  text-align: center;
+  transition:
+    border-color var(--dur-fast) var(--ease-io),
+    box-shadow var(--dur-fast) var(--ease-io);
+}
+
+.ioma-input::placeholder {
+  color: var(--color-text-muted);
+  font-size: var(--text-lg);
+  font-weight: 500;
+}
+
+.ioma-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-glow);
+}
+
+.ioma-input[aria-invalid="true"] { border-color: oklch(60% 0.19 25); }
+
+/* Alto fijo: si creciera con el resultado, el dialogo centrado saltaria. */
+.ioma-resultado {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 104px;
+  padding: var(--sp-3);
+  border-radius: var(--r-lg);
+  text-align: center;
+  transition: background-color var(--dur-fast) var(--ease-io), color var(--dur-fast) var(--ease-io);
+}
+
+.ioma-cupon {
+  font-size: 1.625rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.ioma-dias {
+  margin-top: 2px;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+}
+
+.ioma-resultado[data-estado="vacio"] {
+  background: var(--color-panel);
+  color: var(--color-text-muted);
+}
+
+.ioma-resultado[data-estado="vacio"] .ioma-cupon {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--color-text-secondary);
+}
+
+.ioma-resultado[data-estado="vacio"] .ioma-dias {
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.ioma-resultado[data-estado="ok"] {
+  background: var(--ioma-verde);
+  color: var(--ioma-blanco);
+}
+
+.ioma-resultado[data-estado="vencida"] {
+  background: var(--ioma-rojo);
+  color: var(--ioma-amarillo);
+}
+
+.ioma-resultado[data-estado="error"] {
+  background: color-mix(in oklch, oklch(60% 0.19 25) 12%, var(--color-surface));
+  color: oklch(45% 0.19 25);
+}
+
+[data-theme="dark"] .ioma-resultado[data-estado="error"] {
+  background: color-mix(in oklch, oklch(60% 0.19 25) 18%, var(--color-surface));
+  color: oklch(80% 0.13 25);
+}
+
+.ioma-resultado[data-estado="error"] .ioma-cupon {
+  font-size: var(--text-lg);
+}
+
+.ioma-cupones {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--sp-2);
+}
+
+.ioma-cupones li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 34px;
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--r-md);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  transition:
+    background-color var(--dur-fast) var(--ease-io),
+    border-color var(--dur-fast) var(--ease-io),
+    color var(--dur-fast) var(--ease-io);
+}
+
+.ioma-cupones li.is-activo {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.ioma-acciones {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: var(--sp-2);
+  margin-top: var(--sp-1);
+}
+
+.ioma-btn {
+  height: 44px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--r-md);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  transition:
+    background-color var(--dur-fast) var(--ease-io),
+    transform 120ms var(--ease-out);
+}
+
+.ioma-btn:hover { background: var(--color-surface-hover); }
+.ioma-btn:active { transform: scale(0.97); }
+
+.ioma-btn--principal {
+  border-color: transparent;
+  background: var(--ioma-verde);
+  color: var(--ioma-blanco);
+}
+
+.ioma-btn--principal:hover { background: var(--ioma-verde-hover); }
+
+/* ─────────────────────────────────────────────────────────────────────────────
    ANIMATIONS
    ───────────────────────────────────────────────────────────────────────────── */
 @keyframes fadeInUp {

@@ -82,8 +82,8 @@
       </div>
     </section>
 
-    <section class="toolbar" aria-label="Buscadores">
-      <div class="container toolbar-inner">
+    <section class="toolbar toolbar--ioma" aria-label="Buscadores">
+      <div class="container toolbar-inner toolbar-inner--ioma">
         <div class="tool">
           <label class="tool-label" for="buscador">
             Plataforma
@@ -123,6 +123,11 @@
             </p>
           </div>
         </div>
+
+        <button type="button" class="btn-ioma" id="iomaAbrir" aria-haspopup="dialog" aria-controls="iomaDialogo">
+          <img class="btn-ioma-logo" src="assets/img/ioma.png" alt="IOMA" width="65" height="25">
+          CALCULADOR
+        </button>
       </div>
     </section>
 
@@ -353,7 +358,48 @@
     <p>Desarrollado por Gustavo Luque</p>
   </footer>
 
+  <dialog class="ioma" id="iomaDialogo" aria-labelledby="iomaTitulo">
+    <form class="ioma-form" id="iomaForm" novalidate>
+      <div class="ioma-cabecera">
+        <img class="ioma-logo" src="assets/img/ioma.png" alt="IOMA" width="65" height="25">
+        <h2 class="ioma-titulo" id="iomaTitulo">Calculador de Cupones</h2>
+        <button type="button" class="ioma-cerrar" id="iomaCerrar" aria-label="Cerrar calculador">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="ioma-cuerpo">
+        <div class="ioma-campo">
+          <div class="ioma-etiquetas">
+            <label class="tool-label" for="iomaFecha">Fecha de la receta</label>
+            <span class="ioma-hoy" id="iomaHoy"></span>
+          </div>
+          <input type="text" id="iomaFecha" class="ioma-input" placeholder="DD/MM/AAAA"
+                 inputmode="numeric" maxlength="10" autocomplete="off" spellcheck="false" enterkeyhint="done">
+        </div>
+
+        <div class="ioma-resultado" id="iomaResultado" data-estado="vacio" role="status" aria-live="polite">
+          <p class="ioma-cupon" id="iomaCupon"></p>
+          <p class="ioma-dias" id="iomaDias"></p>
+        </div>
+
+        <ol class="ioma-cupones" aria-hidden="true">
+          <li>1</li>
+          <li>2</li>
+          <li>3</li>
+          <li>4</li>
+        </ol>
+
+        <div class="ioma-acciones">
+          <button type="button" class="ioma-btn" id="iomaReset">RESET</button>
+          <button type="submit" class="ioma-btn ioma-btn--principal">CALCULAR</button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
   <script src="assets/js/index.js"></script>
   <script src="assets/js/medicos.js"></script>
+  <script src="assets/js/ioma.js"></script>
 </body>
 </html>
