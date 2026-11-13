@@ -101,11 +101,14 @@
         return;
       }
 
-      const dias = Math.round((hoyUTC() - inicio) / MS_DIA);
-      if (dias < 0) {
+      const transcurridos = Math.round((hoyUTC() - inicio) / MS_DIA);
+      if (transcurridos < 0) {
         pintar('error', 'REVISE EL CAMPO FECHA', 'La fecha es posterior a hoy');
         return;
       }
+
+      // El dia de la prescripcion cuenta como dia 1, no como dia 0.
+      const dias = transcurridos + 1;
 
       const r = cupon(dias);
       pintar(r.vencida ? 'vencida' : 'ok', r.texto, `${dias} DIAS`, r.cupones);
